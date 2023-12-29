@@ -21,6 +21,8 @@ const server = net.createServer(socket => {
             fileName = prompt('>_');
         }
         fs.writeFileSync(fileName, data, {flag: "a"});
+        //We separate the sizes by commas because there used to be this error where if we send TCP messages too fast, they can bunch up into the same message, which can cause like 2861 byte output
+        //& 6122 byte output to bunch up into 28616122 byte output, which severely skews calculating if the download is done and can lead to file corruption by sending unfinished files (Especially when sending binaries)
         socket.write(String(data.length) + ",");
         endFile = true;
     });
